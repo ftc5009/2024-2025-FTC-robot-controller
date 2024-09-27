@@ -27,11 +27,12 @@ android {
 }
 
 dependencies {
-    implementation project(':FtcRobotController')
-
     implementation 'androidx.core:core-ktx:1.13.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.6.10"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1"
+
+    implementation project(':FtcRobotController')
+    implementation project(':Hyperion')
 
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
 }

@@ -8,6 +8,7 @@ plugins {
 android {
     namespace = "ca.helios5009.hyperion"
     compileSdk = 33
+    ndkVersion = "27.1.12297006"
 
     defaultConfig {
         minSdk = 24
@@ -36,7 +37,9 @@ dependencies {
     compileOnly("org.firstinspires.ftc:Hardware:$ftcVersion")
     compileOnly("org.firstinspires.ftc:FtcCommon:$ftcVersion")
     compileOnly("org.firstinspires.ftc:Vision:$ftcVersion")
-    implementation("androidx.core:core-ktx:1.13.1")
+    implementation("androidx.core:core-ktx:1.5.0")
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.6.10"))
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
 }
