@@ -2,7 +2,7 @@
 //import com.nishtahir.CargoBuildTask
 //import com.nishtahir.CargoExtension
 
-val ftcVersion = "9.1.0"
+val ftcVersion = "10.1.0"
 
 plugins {
 	id("com.android.library")

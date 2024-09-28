@@ -35,9 +35,6 @@ class MainTele: LinearOpMode(){
 
 		while(opModeIsActive()) {
 			//instance.odometry.calculate()
-			telemetry.addData("Left Encoder", instance.bot.leftEncoder.currentPosition)
-			telemetry.addData("Right Encoder", instance.bot.rightEncoder.currentPosition)
-			telemetry.addData("Back Encoder", instance.bot.backEncoder.currentPosition)
 			//telemetry.addData("X", instance.odometry.getLocation().x)
 			//telemetry.addData("Y", instance.odometry.getLocation().y)
 			//telemetry.addData("Heading", instance.odometry.getRotDegrees())
