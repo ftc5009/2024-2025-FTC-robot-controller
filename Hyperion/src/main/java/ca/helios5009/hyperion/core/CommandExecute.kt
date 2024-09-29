@@ -19,7 +19,6 @@ class CommandExecute(val opMode: LinearOpMode, val eventListener: EventListener,
 	val commandsParse = CommandsParse()
 	private var ready = false
 	var motors: Motors? = null
-	var odometry: Odometry? = null
 	var movement: Movement? = null
 
 	fun readPath(fileName: String) {
@@ -31,7 +30,7 @@ class CommandExecute(val opMode: LinearOpMode, val eventListener: EventListener,
 
 	fun execute() {
 
-		if (unParsedCommands == "" || motors == null || odometry == null || movement == null) {
+		if (unParsedCommands == "" || motors == null || movement == null) {
 			RobotLog.ee("Hyperion", "No commands to execute")
 			return
 		}
@@ -67,7 +66,7 @@ class CommandExecute(val opMode: LinearOpMode, val eventListener: EventListener,
 		if (!opMode.opModeIsActive()) {
 			return
 		}
-		odometry?.setOrigin(point.x, point.y, point.rot)
+		movement!!.setPosition(point)
 		eventListener.call(point.event.message)
 	}
 
@@ -98,8 +97,8 @@ class CommandExecute(val opMode: LinearOpMode, val eventListener: EventListener,
 		val waitType = gsonParse.fromJson(wait.wait_type.toString(), LinkedTreeMap<String, JsonObject>()::class.java)
 
 		waitType.keys.forEach { waitName ->
-			val currentPosition = odometry?.getLocation()
-				movement?.target = currentPosition!!
+			val currentPosition = movement!!.getPosition()
+				movement?.target = currentPosition
 			when (waitName.lowercase()) {
 				"event" -> {
 					if (!testOnly) {

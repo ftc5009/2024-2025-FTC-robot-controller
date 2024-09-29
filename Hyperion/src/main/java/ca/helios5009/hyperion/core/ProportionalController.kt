@@ -4,7 +4,14 @@ import com.qualcomm.robotcore.util.ElapsedTime
 import com.qualcomm.robotcore.util.Range
 import kotlin.math.abs
 
-class ProportionalController(var gain: Double, var accelLimit: Double, var defaultOutputLimit: Double, tolerance: Double, deadband: Double, circular: Boolean = false) {
+class ProportionalController(
+	var gain: Double,
+	var accelLimit: Double,
+	var defaultOutputLimit: Double,
+	tolerance: Double,
+	deadband: Double,
+	circular: Boolean = false
+) {
 
 	var lastOutput = 0.0
 	var liveOutputLimit: Double

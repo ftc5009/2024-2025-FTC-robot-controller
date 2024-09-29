@@ -10,7 +10,7 @@ class Motors(val fl: MotorWrapper, val fr: MotorWrapper, val br: MotorWrapper, v
 
 	fun move(drive: Double, strafe: Double, rotate: Double) {
 		val maxPower = abs(drive) + abs(strafe) + abs(rotate)
-		val max = if (maxPower < 0.15) maxPower / 0.15 else maxOf(1.0, maxPower/0.8)/powerRatio.get() // 0.8 is the max power of the motors, if the number is greater than 0.8, it will be divided by 0.8
+		val max = if (maxPower < 0.15) maxPower / 0.15 else maxOf(1.0, maxPower)/powerRatio.get() // 0.8 is the max power of the motors, if the number is greater than 0.8, it will be divided by 0.8
 
 		fl.setPower((drive + strafe + rotate) / max)
 		fr.setPower((drive - strafe - rotate) / max)

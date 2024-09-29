@@ -29,7 +29,7 @@ class MainTeleOp(private val instance : LinearOpMode) {
 
 	fun driveControls(gamepad: Gamepad) {
 		val forward = -gamepad.left_stick_y.toDouble().pow(3) // * -sign(gamepad.left_stick_y.toDouble())
-		val turn = (gamepad.right_stick_x.toDouble() * 0.8).pow(3) //* sign(gamepad.right_stick_x.toDouble())
+		val turn = (gamepad.right_stick_x.toDouble()).pow(3) //* sign(gamepad.right_stick_x.toDouble())
 		val strafe = (gamepad.left_stick_x.toDouble() * 1.1).pow(3) //* sign(gamepad.left_stick_x.toDouble())
 
 		movement.move(forward, strafe, turn)

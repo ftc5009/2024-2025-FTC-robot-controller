@@ -30,7 +30,7 @@ class Odometry (private val leftEncoder: DcMotorEx, private val rightEncoder: Dc
 		this.distanceLeftRight = distanceLeftRight
 	}
 
-	fun calculate(): Boolean {
+	fun calculate(): Point {
 		lastBack = currentBack
 		lastLeft = currentLeft
 		lastRight = currentRight
@@ -54,15 +54,15 @@ class Odometry (private val leftEncoder: DcMotorEx, private val rightEncoder: Dc
 		current.rot -= deltaTheta
 		location.set(current)
 
-		return true
+		return current
 	}
 
 	fun getRotDegrees() : Double {
 		return location.get().rot * 180 / (PI)
 	}
 
-	fun setOrigin (x:Double, y: Double, rot: Double) {
-		location.set(Point(x, y, rot))
+	fun setOrigin (point: Point) {
+		location.set(point)
 	}
 
 	fun getLocation() : Point {

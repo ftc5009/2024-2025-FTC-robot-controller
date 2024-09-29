@@ -1,9 +1,12 @@
 package ca.helios5009.hyperion.core
 
+import android.net.ipsec.ike.exceptions.InvalidKeException
+import ca.helios5009.hyperion.misc.PositionType
 import ca.helios5009.hyperion.misc.euclideanDistance
 import ca.helios5009.hyperion.misc.commands.Point
 import ca.helios5009.hyperion.misc.commands.PointType
 import ca.helios5009.hyperion.misc.events.EventListener
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.util.ElapsedTime
 import kotlin.math.PI
@@ -12,7 +15,15 @@ import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Movement(private val listener: EventListener, private val bot: Motors, private val odometry: Odometry, private val opMode: LinearOpMode) {
+class Movement(
+	private val opMode: LinearOpMode,
+	private val listener: EventListener,
+	private val bot: Motors,
+	private val type: PositionType
+) {
+	private var otos: SparkFunOTOS? = null
+	private var deadwheels: Odometry? = null
+	private val t = opMode.telemetry
 
 	private lateinit var driveController : ProportionalController
 	private lateinit var strafeController : ProportionalController
@@ -21,28 +32,19 @@ class Movement(private val listener: EventListener, private val bot: Motors, pri
 
 	fun start(points: MutableList<Point>) {
 		target = points.removeLast()
+		val pos = getPosition()
 		for (i in 0 until points.size) {
 			var point = points[i]
 
-			if (point.event.message.startsWith("constant_move")) { // "constant_move|90|nothing"
-				val split = point.event.message.split("|")
-				val angle = split[1].toDouble() * PI / 180.0
-				val message = split[2]
-				listener.call(message)
-				while(opMode.opModeIsActive() && odometry.calculate() && abs(odometry.getLocation().rot - angle) > 1.0) {
-					bot.move(point.x, point.y, point.rot)
-				}
-			} else {
-				listener.call(point.event.message)
-				if (point.type == PointType.Relative) {
-					val localX = odometry.getLocation().x + point.x
-					val localY = odometry.getLocation().y + point.y
-					val localRot = odometry.getLocation().rot + point.rot
-					point = Point(localX, localY, localRot)
-				}
-
+			listener.call(point.event.message)
+			if (point.type == PointType.Relative) {
+				val localX = pos.x + point.x
+				val localY = pos.y + point.y
+				val localRot = pos.rot + point.rot
+				point = Point(localX, localY, localRot)
 			}
-			val isBigger = euclideanDistance(odometry.getLocation(), target) < euclideanDistance(point, target)
+
+			val isBigger = euclideanDistance(pos, target) < euclideanDistance(point, target)
 			goToPosition(point, isBigger)
 			resetController()
 		}
@@ -57,33 +59,35 @@ class Movement(private val listener: EventListener, private val bot: Motors, pri
 	}
 
 	fun goToPosition(nextPoint: Point, isBigger: Boolean? = null) {
-		while(opMode.opModeIsActive() && odometry.calculate() && (isBigger == null || isBigger == euclideanDistance(odometry.getLocation(), target) < euclideanDistance(nextPoint, target))) {
+		var pos = getPosition()
+		while(opMode.opModeIsActive() && (isBigger == null || isBigger == euclideanDistance(pos, target) < euclideanDistance(nextPoint, target))) {
 
-			val magnitude = euclideanDistance(nextPoint, odometry.getLocation())
+			val magnitude = euclideanDistance(nextPoint, pos)
 			if (abs(magnitude) < 1.0) {
-				println("magnitude broke loop")
+				t.addLine("Loop broke")
+				t.update()
 				break
 			}
 
 			val speedFactor = if (!nextPoint.useError) {
-				euclideanDistance(odometry.getLocation(), target)
+				euclideanDistance(pos, target)
 			} else {
-				euclideanDistance(odometry.getLocation(), nextPoint)
+				euclideanDistance(pos, nextPoint)
 			}
 
-			val deltaX = -(nextPoint.x - odometry.getLocation().x) / magnitude * speedFactor
-			val deltaY = nextPoint.y - odometry.getLocation().y / magnitude * speedFactor
-			val deltaRot = -(nextPoint.rot - odometry.getLocation().rot)
+			val deltaX = (nextPoint.x - pos.x) / magnitude * speedFactor
+			val deltaY = nextPoint.y - pos.y / magnitude * speedFactor
+			val deltaRot = (nextPoint.rot - pos.rot)
 
-			val theta = -odometry.getLocation().rot
+			val theta = pos.rot
 			val dx = deltaX * cos(theta) - deltaY * sin(theta)
 			val dy = deltaX * sin(theta) + deltaY * cos(theta)
 
 			val drive = driveController.getOutput(dx)
-			val strafe = strafeController.getOutput(dy)
-			val rotate = rotateController.getOutput(deltaRot * 180/PI)
+			val strafe = -strafeController.getOutput(dy)
+			val rotate = -rotateController.getOutput(deltaRot * 180/PI)
 			bot.move(drive, strafe, rotate)
-//			if (t != null) {
+
 ////				t.addData("drivePosition", driveController.inPosition)
 ////				t.addData("strafePosition", strafeController.inPosition)
 ////				t.addData("turnPosition", rotateController.inPosition)
@@ -109,8 +113,12 @@ class Movement(private val listener: EventListener, private val bot: Motors, pri
 ////				t.addData("Distance X", deltaX)
 ////				t.addData("Distance Y", deltaY)
 ////				t.addData("Rot Error", deltaRot)
-////				t.update()
+				t.addData("x", pos.x)
+				t.addData("y", pos.y)
+				t.addData("y", pos.rot)
+				t.update()
 //			}
+			pos = getPosition()
 			if (isBigger == null) {
 				break
 			}
@@ -133,19 +141,58 @@ class Movement(private val listener: EventListener, private val bot: Motors, pri
 				timer.reset()
 			}
 
-			if (driveController.inPosition() || strafeController.inPosition() || rotateController.inPosition()) {
-				if (!inPosition) {
-					timeout.reset()
-					inPosition = true
-				}
-				if (timeout.seconds() > 0.5) {
-					break
-				}
-			} else {
-				inPosition = false
-			}
+//			if (driveController.inPosition() || strafeController.inPosition() || rotateController.inPosition()) {
+//				if (!inPosition) {
+//					timeout.reset()
+//					inPosition = true
+//				}
+//				if (timeout.seconds() > 0.5) {
+//					break
+//				}
+//			} else {
+//				inPosition = false
+//			}
 
 
+		}
+	}
+
+	fun setOtos(x: SparkFunOTOS){
+		if(type == PositionType.Otos){
+			otos = x
+		}
+	}
+	fun setDeadwheels(x: Odometry){
+		if(type == PositionType.Deadwheels){
+			deadwheels = x
+		}
+	}
+	fun getPosition(): Point {
+		if(type == PositionType.Otos && otos != null){
+			val pos = otos!!.position
+			return Point(
+				pos.x,
+				pos.y,
+				pos.h
+			)
+		} else if(type == PositionType.Deadwheels && deadwheels != null) {
+			return deadwheels!!.calculate()
+		} else {
+			throw IllegalArgumentException("Need either Otos or Deadwheels")
+		}
+	}
+
+	fun setPosition(point: Point){
+		if(type == PositionType.Otos && otos != null){
+			otos!!.position == SparkFunOTOS.Pose2D(
+				point.x,
+				point.y,
+				point.rot
+			)
+		} else if(type == PositionType.Deadwheels && deadwheels != null) {
+			return deadwheels!!.setOrigin(point)
+		} else {
+			throw IllegalArgumentException("Need either Otos or Deadwheels")
 		}
 	}
 
