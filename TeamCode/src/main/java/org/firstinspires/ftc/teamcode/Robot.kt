@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode
 
-//import com.acmerobotics.dashboard.config.Config
+import com.acmerobotics.dashboard.config.Config
 import ca.helios5009.hyperion.core.MotorWrapper
 import ca.helios5009.hyperion.misc.euclideanDistance
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS
@@ -49,12 +49,12 @@ class Robot(private val instance : LinearOpMode) {
 	}
 }
 
-//@Config
+@Config
 object OdometryValues {
 	@JvmField var distanceBack = -5.25;
 	@JvmField var distanceLeftRight = 11.5652;
 }
-//@Config
+@Config
 object DriveConstants {
 	@JvmField var GainSpeed = 0.075
 	@JvmField var AccelerationLimit = 1.0
@@ -63,7 +63,7 @@ object DriveConstants {
 	@JvmField var Deadband = 0.75
 }
 
-//@Config
+@Config
 object StrafeConstants {
 	@JvmField var GainSpeed = 0.0825
 	@JvmField var AccelerationLimit = 1.5
@@ -72,7 +72,7 @@ object StrafeConstants {
 	@JvmField var Deadband = 0.75
 }
 
-//@Config
+@Config
 object RotateConstants {
 	@JvmField var GainSpeed = 0.01
 	@JvmField var AccelerationLimit = 1.0

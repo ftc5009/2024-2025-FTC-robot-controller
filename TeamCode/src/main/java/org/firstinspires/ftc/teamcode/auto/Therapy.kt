@@ -19,11 +19,8 @@ class Therapy: LinearOpMode() {
             paths.start(Point(0.0,0.0,0.0))
             paths.continuousLine(
                 mutableListOf(
-                    Point(1.0, 7.0, 0.0),
-                    Point(55.0,0.0,0.0),
-                    Point(55.0,9.0,0.0),
-                    Point(3.0,9.0,0.0),
-                    Point(3.0, -90.0, 0.0)
+                    Point(90.0, 0.0, 0.0),
+                    Point(90.0,-30.0,0.0)
                 )
             )
             paths.end(EventCall(""))
