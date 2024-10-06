@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode
 
+import ca.helios5009.hyperion.core.HyperionMotor
 import com.acmerobotics.dashboard.config.Config
 import ca.helios5009.hyperion.core.MotorWrapper
 import ca.helios5009.hyperion.misc.euclideanDistance
@@ -14,10 +15,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import kotlin.math.abs
 
 class Robot(private val instance : LinearOpMode) {
-	val fl: MotorWrapper = MotorWrapper("FL",instance.hardwareMap)
-	val fr: MotorWrapper = MotorWrapper("FR",instance.hardwareMap)
-	val br: MotorWrapper = MotorWrapper("BR",instance.hardwareMap)
-	val bl: MotorWrapper = MotorWrapper("BL",instance.hardwareMap)
+	val fl: HyperionMotor = HyperionMotor(instance.hardwareMap.get(DcMotorEx::class.java,"FL"))
+	val fr: HyperionMotor = HyperionMotor(instance.hardwareMap.get(DcMotorEx::class.java,"FR"))
+	val br: HyperionMotor = HyperionMotor(instance.hardwareMap.get(DcMotorEx::class.java,"BR"))
+	val bl: HyperionMotor = HyperionMotor(instance.hardwareMap.get(DcMotorEx::class.java,"BL"))
 
 	val otos = instance.hardwareMap.get(SparkFunOTOS::class.java, "OTOS")
 

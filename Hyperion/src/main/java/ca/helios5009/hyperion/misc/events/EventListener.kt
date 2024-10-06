@@ -22,9 +22,12 @@ class EventListener() {
 			return
 		}
 		queue.get().add(newValue)
+		var deleted = false
 		triggerFunctions.forEach {
 			if (it.event.lowercase() == newValue) {
-				queue.get().remove(newValue)
+				if (!deleted) {
+					deleted = queue.get().remove(newValue)
+				}
 				scopes.add(CoroutineScope(Dispatchers.Default).launch {
 					it.run()
 					return@launch
@@ -34,12 +37,13 @@ class EventListener() {
 	}
 
 	fun isInQueue(message: String): Boolean {
-		if (queue.get().isEmpty()) {
+		val queue = queue.get()
+		if (queue.isEmpty()) {
 			return false
 		}
 
-		if (queue.get().contains(message)) {
-			queue.get().remove(message)
+		if (queue.contains(message)) {
+			queue.remove(message)
 			return true
 		}
 		return false

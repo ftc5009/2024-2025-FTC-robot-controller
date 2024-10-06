@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.instances.auto
 import ca.helios5009.hyperion.core.HyperionPath
 import ca.helios5009.hyperion.core.Motors
 import ca.helios5009.hyperion.core.Movement
+import ca.helios5009.hyperion.misc.PositionTracking
 import ca.helios5009.hyperion.misc.PositionType
 import ca.helios5009.hyperion.misc.commands.Point
 import ca.helios5009.hyperion.misc.events.EventListener
@@ -17,11 +18,11 @@ class MainAuto(private val instance : LinearOpMode) {
     val bot = Robot(instance)
     val motors = Motors(bot.fl, bot.fr, bot.br, bot.bl)
     val eventListner = EventListener()
-    val movement = Movement(instance, eventListner, motors, PositionType.Otos)
+    val movement = Movement(instance, eventListner, motors, PositionTracking.OTOS)
 
 
     init {
-        movement.setOtos(bot.otos)
+        movement.setTracking(bot.otos, null)
         movement.setControllerConstants(
             doubleArrayOf(DriveConstants.GainSpeed, DriveConstants.AccelerationLimit, DriveConstants.DefaultOutputLimit, DriveConstants.Tolerance, DriveConstants.Deadband),
             doubleArrayOf(StrafeConstants.GainSpeed,StrafeConstants.AccelerationLimit, StrafeConstants.DefaultOutputLimit, StrafeConstants.Tolerance, StrafeConstants.Deadband),

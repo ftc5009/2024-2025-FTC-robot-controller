@@ -16,11 +16,12 @@ class Therapy: LinearOpMode() {
 
         waitForStart()
         if (opModeIsActive()) {
-            paths.start(Point(0.0,0.0,0.0))
+            paths.start(Point(7.0,108.0,0.0))
             paths.continuousLine(
                 mutableListOf(
-                    Point(90.0, 0.0, 0.0),
-                    Point(90.0,-30.0,0.0)
+                    Point(8.0, 110.0, 0.0),
+                    Point(8.0,110.0,0.0),
+                    Point(55.0, 108.0, 0.0)
                 )
             )
             paths.end(EventCall(""))

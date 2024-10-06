@@ -1,6 +1,5 @@
 package ca.helios5009.hyperion.core
 
-import ca.helios5009.hyperion.core.Movement
 import ca.helios5009.hyperion.misc.events.EventListener
 import ca.helios5009.hyperion.misc.commands.Bezier
 import ca.helios5009.hyperion.misc.commands.EventCall
@@ -13,13 +12,16 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.util.ElapsedTime
 import com.qualcomm.robotcore.util.RobotLog
 
-class CommandExecute(val opMode: LinearOpMode, val eventListener: EventListener, val testOnly: Boolean = false) {
+class CommandExecute(
+	val opMode: LinearOpMode,
+	val eventListener: EventListener,
+	val movement: Movement,
+	val testOnly: Boolean = false
+) {
 	var unParsedCommands = ""
 	val gsonParse = Gson()
 	val commandsParse = CommandsParse()
 	private var ready = false
-	var motors: Motors? = null
-	var movement: Movement? = null
 
 	fun readPath(fileName: String) {
 		val pathReader = AutonPaths()
@@ -30,7 +32,7 @@ class CommandExecute(val opMode: LinearOpMode, val eventListener: EventListener,
 
 	fun execute() {
 
-		if (unParsedCommands == "" || motors == null || movement == null) {
+		if (unParsedCommands == "") {
 			RobotLog.ee("Hyperion", "No commands to execute")
 			return
 		}
@@ -82,7 +84,7 @@ class CommandExecute(val opMode: LinearOpMode, val eventListener: EventListener,
 			return
 		}
 		eventListener.call(point.event.message)
-		movement?.start(arrayListOf(point))
+		movement?.run(arrayListOf(point))
 	}
 
 	/**
@@ -97,15 +99,14 @@ class CommandExecute(val opMode: LinearOpMode, val eventListener: EventListener,
 		val waitType = gsonParse.fromJson(wait.wait_type.toString(), LinkedTreeMap<String, JsonObject>()::class.java)
 
 		waitType.keys.forEach { waitName ->
-			val currentPosition = movement!!.getPosition()
-				movement?.target = currentPosition
+			val currentPosition = movement.getPosition()
 			when (waitName.lowercase()) {
 				"event" -> {
 					if (!testOnly) {
 						val eventData = gsonParse.fromJson(waitType[waitName].toString(), EventCall::class.java)
 						var event = ""
 						while (opMode.opModeIsActive() && event !== eventData.message) {
-							movement?.goToPosition(currentPosition)
+							movement.goto(currentPosition, true)
 							if (eventListener.value.get().lowercase() ==  eventData.message.lowercase()) {
 								event = eventData.message
 							}
@@ -115,7 +116,7 @@ class CommandExecute(val opMode: LinearOpMode, val eventListener: EventListener,
 						timer.reset()
 						val eventData = gsonParse.fromJson(waitType[waitName].toString(), Int::class.java)
 						while (opMode.opModeIsActive() && timer.milliseconds() < eventData.toLong()) {
-							movement?.goToPosition(currentPosition)
+							movement.goto(currentPosition, true)
 						}
 					}
 				}
@@ -124,7 +125,7 @@ class CommandExecute(val opMode: LinearOpMode, val eventListener: EventListener,
 					timer.reset()
 					val eventData = gsonParse.fromJson(waitType[waitName].toString(), Int::class.java)
 					while (opMode.opModeIsActive() && timer.milliseconds() < eventData.toLong()) {
-						movement?.goToPosition(currentPosition)
+						movement.goto(currentPosition, true)
 					}
 				}
 			}
@@ -151,7 +152,7 @@ class CommandExecute(val opMode: LinearOpMode, val eventListener: EventListener,
 		}
 
 		val points = commandsParse.bezier(bezier.start, bezier.control[0], bezier.control[1], bezier.end)
-		movement?.start(points)
+		movement?.run(points)
 	}
 
 	private fun handleBlock(block: ArrayList<LinkedTreeMap<String, JsonObject>>) {
@@ -172,7 +173,7 @@ class CommandExecute(val opMode: LinearOpMode, val eventListener: EventListener,
 				"Point: ${line.x}, ${line.y}, ${line.rot}"
 			)
 		}
-		movement?.start(listOfPoints)
+		movement?.run(listOfPoints)
 	}
 
 }

@@ -5,36 +5,32 @@ import com.qualcomm.robotcore.util.Range
 import kotlin.math.abs
 
 class ProportionalController(
-	var gain: Double,
-	var accelLimit: Double,
-	var defaultOutputLimit: Double,
-	tolerance: Double,
-	deadband: Double,
-	circular: Boolean = false
+	private val gain: Double,
+	private val accelLimit: Double,
+	private val defaultOutputLimit: Double,
+	private val tolerance: Double,
+	private val deadband: Double,
+	private val circular: Boolean = false
 ) {
-
-	var lastOutput = 0.0
-	var liveOutputLimit: Double
-	var setpoint = 0.0
-	var tolerance: Double
-	var deadband: Double
-	var circular: Boolean
 	var inPosition = false
-	var cycleTime = ElapsedTime()
+
+	private var lastOutput = 0.0
+	private var liveOutputLimit: Double
+	private var setpoint = 0.0
+	private var cycleTime = ElapsedTime()
 
 	init {
 		liveOutputLimit = defaultOutputLimit
-		this.tolerance = tolerance
-		this.deadband = deadband
-		this.circular = circular
 		reset(0.0)
 	}
 
 	/**
 	 * Determines power required to obtain the desired setpoint value based on new input value.
 	 * Uses proportional gain, and limits rate of change of output, as well as max output.
+	 * Make sure deadband is set to be smaller than the tolerance.
 	 * @param input  Current live control input value (from sensors)
 	 * @return desired output power.
+	 * @see Movement.goto
 	 */
 	fun getOutput(input: Double): Double {
 		var error = input
@@ -43,8 +39,8 @@ class ProportionalController(
 
 		// normalize to +/- 180 if we are controlling heading
 		if (circular) {
-			while (error > 180) error -= 360.0
-			while (error <= -180) error += 360.0
+			while (error > Math.PI) error -= 2 * Math.PI
+			while (error <= -Math.PI) error += 2 * Math.PI
 		}
 		inPosition = abs(error) < tolerance
 		// Prevent any very slow motor output accumulation
@@ -66,10 +62,6 @@ class ProportionalController(
 		lastOutput = output
 		cycleTime.reset()
 		return output
-	}
-
-	fun inPosition(): Boolean {
-		return inPosition
 	}
 
 	/**

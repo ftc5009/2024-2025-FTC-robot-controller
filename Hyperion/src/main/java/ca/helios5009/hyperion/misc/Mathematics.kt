@@ -1,8 +1,17 @@
 package ca.helios5009.hyperion.misc
 
 import ca.helios5009.hyperion.misc.commands.Point
+import kotlin.math.acos
 import kotlin.math.pow
 import kotlin.math.sqrt
+
+/** Returns the  */
+fun relativeRadian(angle: Double): Double {
+	if (angle < 0) {
+		return -((-angle + Math.PI) % (2 * Math.PI) - Math.PI)
+	}
+	return (angle + Math.PI) % (2 * Math.PI) - Math.PI
+}
 
 fun euclideanDistance(p1: Point, p2: Point): Double {
 	return sqrt((p2.x - p1.x).pow(2.0) + (p2.y - p1.y).pow(2.0))
@@ -27,19 +36,25 @@ fun generateBezier(pt0: Point, ct0: Point, ct1: Point, pt1: Point): MutableList<
 
 		val y = cubicBezier(pt0.y, ct0.y, ct1.y, pt1.y, t)
 
-		val rot = if (lerp(pt0.rot, pt1.rot, t) > 0)
-			lerp(pt0.rot, pt1.rot, t)
+		val calcRot = lerp(pt0.rot, pt1.rot, t);
+
+		val rot = if (calcRot > 0)
+			calcRot
 		else
-			lerp(pt0.rot, pt1.rot, t) + 360
+			calcRot + 2 * Math.PI
 
 		when(t) {
-			0.0 -> points.add(Point(x, y, 0.0, pt0.event))
-			1.0 -> points.add(Point(x, y, 0.0, pt1.event))
-			0.25 -> points.add(Point(x, y, 0.0, ct0.event))
-			0.75 -> points.add(Point(x, y, 0.0, ct1.event))
-			else -> points.add(Point(x, y, 0.0))
+			0.0 -> points.add(Point(x, y, rot, pt0.event))
+			1.0 -> points.add(Point(x, y, rot, pt1.event))
+			0.25 -> points.add(Point(x, y, rot, ct0.event))
+			0.75 -> points.add(Point(x, y, rot, ct1.event))
+			else -> points.add(Point(x, y, rot))
 		}
 	}
 
 	return points
+}
+
+fun cosineLaw(a: Double, b: Double, c: Double): Double {
+	return acos(((a * a) + (b * b) - (c * c)) / (2 * a * b))
 }

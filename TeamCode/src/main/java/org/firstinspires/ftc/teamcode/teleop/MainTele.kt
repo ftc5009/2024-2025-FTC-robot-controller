@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.teleop
 //import ca.helios5009.hyperion.core.Odometry
 //import com.acmerobotics.dashboard.FtcDashboard
 //import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
+import com.acmerobotics.dashboard.FtcDashboard
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import kotlinx.coroutines.CoroutineScope
@@ -15,9 +17,9 @@ class MainTele: LinearOpMode(){
 
 	override fun runOpMode() {
 		val instance = MainTeleOp(this)
-		//val dashboard = FtcDashboard.getInstance()
+		val dashboard = FtcDashboard.getInstance()
 
-		//telemetry = MultipleTelemetry(telemetry, dashboard.telemetry)
+		telemetry = MultipleTelemetry(telemetry, dashboard.telemetry)
 
 		waitForStart()
 
@@ -34,10 +36,10 @@ class MainTele: LinearOpMode(){
 		}
 
 		while(opModeIsActive()) {
-			//instance.odometry.calculate()
-			//telemetry.addData("X", instance.odometry.getLocation().x)
-			//telemetry.addData("Y", instance.odometry.getLocation().y)
-			//telemetry.addData("Heading", instance.odometry.getRotDegrees())
+			val pos = instance.movement.getPosition()
+			telemetry.addData("X", pos.x)
+			telemetry.addData("Y", pos.y)
+			telemetry.addData("Heading", pos.rot)
 			telemetry.update()
 		}
 

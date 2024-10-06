@@ -5,17 +5,17 @@ import java.util.concurrent.atomic.AtomicReference
 import kotlin.math.abs
 
 
-class Motors(val fl: MotorWrapper, val fr: MotorWrapper, val br: MotorWrapper, val bl: MotorWrapper) {
+class Motors(private val fl: HyperionMotor, private val fr: HyperionMotor, private val br: HyperionMotor, private val bl: HyperionMotor) {
 	val powerRatio = AtomicReference(1.0)
 
 	fun move(drive: Double, strafe: Double, rotate: Double) {
 		val maxPower = abs(drive) + abs(strafe) + abs(rotate)
-		val max = if (maxPower < 0.15) maxPower / 0.15 else maxOf(1.0, maxPower)/powerRatio.get() // 0.8 is the max power of the motors, if the number is greater than 0.8, it will be divided by 0.8
+		val max = if (maxPower < 0.15) maxPower / 0.15 else maxOf(1.0, maxPower/0.8)/powerRatio.get() // 0.8 is the max power of the motors, if the number is greater than 0.8, it will be divided by 0.8
 
-		fl.setPower((drive + strafe + rotate) / max)
-		fr.setPower((drive - strafe - rotate) / max)
-		bl.setPower((drive - strafe + rotate) / max)
-		br.setPower((drive + strafe - rotate) / max)
+		fl.setPower((drive - strafe + rotate) / max)
+		fr.setPower((drive + strafe - rotate) / max)
+		bl.setPower((drive - strafe - rotate) / max)
+		br.setPower((drive + strafe + rotate) / max)
 	}
 
 	fun stop () {
