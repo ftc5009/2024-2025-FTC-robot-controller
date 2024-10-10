@@ -1,0 +1,3 @@
+[submodule "Hyperion"]
+	path = Hyperion
+	url = https://github.com/team5009/Hyperion

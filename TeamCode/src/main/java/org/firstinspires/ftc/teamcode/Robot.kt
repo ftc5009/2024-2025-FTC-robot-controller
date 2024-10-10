@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode
 
 import ca.helios5009.hyperion.core.HyperionMotor
 import com.acmerobotics.dashboard.config.Config
-import ca.helios5009.hyperion.core.MotorWrapper
 import ca.helios5009.hyperion.misc.euclideanDistance
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
