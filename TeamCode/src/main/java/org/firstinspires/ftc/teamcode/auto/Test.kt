@@ -14,17 +14,19 @@ class Test: LinearOpMode() {
     val eventListener = EventListener()
     override fun runOpMode() {
         val motors = Motors(hardwareMap, "FL", "FR", "BL", "BR")
-        val movement = Movement(this, eventListener, motors, PositionTracking.OTOS)
-        val path = PathBuilder(movement)
+        val path = PathBuilder(this, eventListener, motors, PositionTracking.OTOS)
         waitForStart()
-        path.start(Point(0.0,0.0,0.0))
+        path.start(Point(7.0,108.0,0.0))
         path.segment(
-            Point(96.0,0.0,0.0),
-            Point(96.0, -30.0,0.0)
-        )
-        path.wait("2000ms")
-        path.segment(
-            Point(96.0,0.0,0.0)
+            Point(8.0,120.0,0.0),
+            Point(10.0,108.0,0.0),
+            Point(57.0,108.0,0.0).useError(),
+            Point(57.0, 110.0,0.0),
+            Point(20.0,120.0,0.0).useError(),
+            Point(27.0, 160.0, 0.0),
+            Point(57.0,108.0,0.0).useError(),
+            Point(57.0,128.0,0.0),
+            Point(10.0,120.0,0.0)
         )
         path.end("_")
     }
