@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.auto
 
 import ca.helios5009.hyperion.core.Motors
-import ca.helios5009.hyperion.core.Movement
+import ca.helios5009.hyperion.hardware.Otos
 import ca.helios5009.hyperion.misc.constants.PositionTracking
 import ca.helios5009.hyperion.misc.events.EventListener
 import ca.helios5009.hyperion.pathing.PathBuilder
@@ -12,9 +12,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 @Autonomous(name = "Test")
 class Test: LinearOpMode() {
     val eventListener = EventListener()
+    lateinit var path: PathBuilder<Otos>
     override fun runOpMode() {
         val motors = Motors(hardwareMap, "FL", "FR", "BL", "BR")
-        val path = PathBuilder(this, eventListener, motors, PositionTracking.OTOS)
+        val otos = Otos(hardwareMap, "otos")
+        val path = PathBuilder<Any>(this, eventListener, motors, PositionTracking.OTOS)
         waitForStart()
         path.start(Point(7.0,108.0,0.0))
         path.segment(
@@ -28,6 +30,6 @@ class Test: LinearOpMode() {
             Point(57.0,128.0,0.0),
             Point(10.0,120.0,0.0)
         )
-        path.end("_")
+        path.endHold("_")
     }
 }

@@ -13,7 +13,7 @@ class PID_Tuning_SLWT: LinearOpMode() {
     val eventListener = EventListener()
     override fun runOpMode() {
         val motors = Motors(hardwareMap, "FL", "FR", "BL", "BR")
-        val path = PathBuilder(this, eventListener, motors, PositionTracking.OTOS)
+        val path = PathBuilder<Any>(this, eventListener, motors, PositionTracking.OTOS, true)
         waitForStart()
         path.start(Point(32.5,8.0,0.0))
 
@@ -21,7 +21,7 @@ class PID_Tuning_SLWT: LinearOpMode() {
             Point(45.0, 34.0, 0.0),
             Point(17.0, 55.5, 179.0)
         )
-        path.end("_")
+        path.endHold("_")
 
     }
 }
