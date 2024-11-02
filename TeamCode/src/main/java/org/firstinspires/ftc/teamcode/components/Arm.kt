@@ -73,7 +73,7 @@ class Arm(private val instance:LinearOpMode) {
         instance.telemetry.addData("Error Slide", slideOutput)
         instance.telemetry.addData("Error Gear", gearOutput)
         instance.telemetry.addData("thingy", abs(back_extension/Math.cos(reference_angle - Math.toRadians(gear_angle))))
-        gear.setPower(Math.sqrt(abs(gearOutput)) * sign(gearOutput))
+        gear.setPower(gearOutput)
         slide.setPower(Math.sqrt(abs(slideOutput)) * sign(slideOutput))
     }
 
