@@ -30,12 +30,24 @@ class MainTeleOp: LinearOpMode() {
 			arm.go_to_target()
 
 			if(gamepad1.x){
+				//high basket
 				gear_target.set(45.0)
 				slide_target.set(5.0)
 			}
 			if(gamepad1.y){
+				//something
 				gear_target.set(39.0)
 				slide_target.set(23.5)
+			}
+			if(gamepad1.a){
+				//high bar for specimens
+				gear_target.set(58.0)
+				slide_target.set(23.0)
+			}
+			if(gamepad1.b){
+				//sample pick up from submersible
+				gear_target.set(161.0)
+				slide_target.set(0.0)
 			}
 
 			telemetry.update()
