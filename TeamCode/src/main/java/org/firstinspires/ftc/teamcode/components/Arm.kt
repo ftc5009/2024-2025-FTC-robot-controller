@@ -23,7 +23,7 @@ class Arm(private val instance:LinearOpMode) {
     val back_extension = -16.0
     val reference_angle = 3/4*Math.PI
 
-    val pid_gear = ProportionalController(0.07, 0.1, 0.4, 0.0, false)
+    val pid_gear = ProportionalController(0.01, 0.1, 0.4, 0.0, false)
     val pid_slide = ProportionalController(0.05,0.1,1.0,0.0, false)
 
     val gear_degrees_ticks = (100*384.5)/16.0/360.0
@@ -47,7 +47,7 @@ class Arm(private val instance:LinearOpMode) {
         gear.motor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         gear.motor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
 
-        slide_target.set(0.3)
+        slide_target.set(0.5)
         gear_target.set(25.0)
 
         //left_wrist.position = 0.5
@@ -73,7 +73,7 @@ class Arm(private val instance:LinearOpMode) {
         instance.telemetry.addData("Error Slide", slideOutput)
         instance.telemetry.addData("Error Gear", gearOutput)
         instance.telemetry.addData("thingy", abs(back_extension/Math.cos(reference_angle - Math.toRadians(gear_angle))))
-        gear.setPower(gearOutput)
+        gear.setPower(Math.sqrt(abs(gearOutput)) * sign(gearOutput))
         slide.setPower(Math.sqrt(abs(slideOutput)) * sign(slideOutput))
     }
 
