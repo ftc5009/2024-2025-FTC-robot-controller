@@ -16,7 +16,7 @@ class MainTeleOp: LinearOpMode() {
 		arm.init_motors()
 		while(opModeInInit()) {
 			arm.go_to_target()
-			telemetry.addData("arm error: ", arm.pid_slide.update(slide_target.get() * arm.slide_inches_ticks - arm.slide.getPosition()))
+			telemetry.addData("arm error: ", arm.pid_slide.update(slide_target.get() - arm.slide.getPosition() / arm.slide_inches_ticks))
 			telemetry.addData("slide pos", arm.slide.getPosition())
 			telemetry.addData("gear pos", arm.gear.getPosition() / arm.gear_degrees_ticks)
 			telemetry.update()
@@ -36,8 +36,8 @@ class MainTeleOp: LinearOpMode() {
 			}
 			if(gamepad1.y){
 				//high basket
-				gear_target.set(39.0)
-				slide_target.set(20.0)
+				gear_target.set(42.0)
+				slide_target.set(27.0)
 			}
 			if(gamepad1.a){
 				//high chamber for specimens

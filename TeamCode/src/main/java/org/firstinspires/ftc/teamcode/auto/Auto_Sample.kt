@@ -10,44 +10,70 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.DriveConstants
 import org.firstinspires.ftc.teamcode.RotateConstants
 import org.firstinspires.ftc.teamcode.StrafeConstants
+import org.firstinspires.ftc.teamcode.instances.auto.Events
 
 @Autonomous(name = "Auto_Sample")
 class Auto_Sample: LinearOpMode() {
-    val eventListener = EventListener()
     lateinit var path: PathBuilder<Otos>
     override fun runOpMode() {
+        val eventListener = Events(this)
         val motors = Motors(hardwareMap, "FL", "FR", "BL", "BR")
         val otos = Otos(hardwareMap, "OTOS")
-        val path = PathBuilder(this, eventListener, motors, otos, true)
-        path.setDriveConstants(DriveConstants.GainSpeed, DriveConstants.AccelerationLimit, DriveConstants.Tolerance, DriveConstants.Deadband)
-        path.setStrafeConstants(StrafeConstants.GainSpeed, StrafeConstants.AccelerationLimit, StrafeConstants.Tolerance, StrafeConstants.Deadband)
-        path.setRotateConstants(RotateConstants.GainSpeed, RotateConstants.AccelerationLimit, RotateConstants.Tolerance, RotateConstants.Deadband)
+        val path = PathBuilder(this, eventListener.listener, motors, otos, true)
+        val linearadjust = 1.0
+        path.setDriveConstants(
+            DriveConstants.GainSpeed,
+            DriveConstants.AccelerationLimit,
+            DriveConstants.Tolerance,
+            DriveConstants.Deadband
+        )
+        path.setStrafeConstants(
+            StrafeConstants.GainSpeed,
+            StrafeConstants.AccelerationLimit,
+            StrafeConstants.Tolerance,
+            StrafeConstants.Deadband
+        )
+        path.setRotateConstants(
+            RotateConstants.GainSpeed,
+            RotateConstants.AccelerationLimit,
+            RotateConstants.Tolerance,
+            RotateConstants.Deadband
+        )
+        path.start(Point(6.5, 110.0 * linearadjust, 0.0, "start"))//start
         waitForStart()
-        path.start(Point(6.5,110.0 * (2.0/3.0),0.0))//start
-        path.segment(Point(18.0, 136.0 * (2.0/3.0),0.0, "lift"),)//place0 done
-        //path.wait("_finish_dropping")
-        path.wait(3000.0)
-        path.segment(Point(16.0,124.0 * (2.0/3.0),0.0, "lift_down"))//pickup1 done arm is 11in
-        //path.wait("_finish_pickup")
-        path.wait(1000.0)
-        path.segment(Point(18.0,136.0 * (2.0/3.0),0.0, "lift"))//place1 done
-        //path.wait("_finish_dropping")
-        path.wait(3000.0)
-        path.segment(Point(17.0,134.0 * (2.0/3.0),0.0, "lift_down"))//pickup2 done
-        //path.wait("_finish_pickup")
-        path.wait(1000.0)
-        path.segment(Point(18.0,136.0 * (2.0/3.0),0.0, "lift"))//place2 done
-        //path.wait("_finish_dropping")
-        path.wait(3000.0)
-        //path.segment(Point(21.5,126.6 * (2.0/3.0),0.0, "lift_down"))//pickup3
-        //path.wait("_finish_pickup")
-        //path.segment(Point(19.0,126.0 * (2.0/3.0),0.0, "lift"))//place3 done
-        //path.wait("_finish_dropping")
         path.segment(
-            Point(53.0, 120.0 * (2.0/3.0), 0.0),
-            Point(53.0,120.0 * (2.0/3.0),90.0).useError(),
-            Point(53.0,87.0 * (2.0/3.0),90.0)
-            )//park
+            Point(25.0,120.0 * linearadjust,0.0, "lift"),
+            Point(17.0, 130.0 * linearadjust, 0.0))//place0
+        path.wait("finish_dropping")
+        path.segment(Point(14.0, 119.0 * linearadjust, 0.0, "lift_down"))//pickup1
+        path.wait("finish_pickup")
+        //path.wait(1000.0)
+        path.segment(
+            Point(22.0, 119.0, 0.0, "pickup"),
+            Point(17.0, 130.0 * linearadjust, 0.0, "lift")
+        ) //place1
+        path.wait("finish_dropping")
+        //path.wait(2000.0)
+        path.segment(
+            Point(25.0, 128.0 * linearadjust, 0.0, "lift_down"),//pickup2 finish it
+            Point(17.0, 127.0 * linearadjust, 0.0)
+        )
+        path.wait("finish_pickup")
+        //path.wait(1000.0)
+        path.segment(
+            Point(22.0,127.0,0.0, "pickup"),
+            Point(17.0, 130.0 * linearadjust, 0.0, "lift"))//place2
+        path.wait("finish_dropping")
+        //path.wait(2000.0)
+        path.segment(Point(23.0, 128.0 * linearadjust, 32.0, "final_lift_down"))//pickup3
+        path.wait("finished_final_pickup")
+        path.segment(Point(17.0, 130.0 * linearadjust, -50.0, "lift"))//place3
+        path.wait("finish_dropping")
+        path.segment(
+            Point(56.0, 135.0 * linearadjust, -50.0, "park"),//park
+            Point(56.0, 125.0 * linearadjust, -90.0)
+        )
+        path.segment(Point(56.0, 89.0 * linearadjust, -90.0))
         path.endHold("_")
     }
 }

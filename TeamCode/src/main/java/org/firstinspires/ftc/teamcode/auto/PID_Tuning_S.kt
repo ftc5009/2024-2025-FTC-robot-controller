@@ -7,6 +7,9 @@ import ca.helios5009.hyperion.pathing.PathBuilder
 import ca.helios5009.hyperion.pathing.Point
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import org.firstinspires.ftc.teamcode.DriveConstants
+import org.firstinspires.ftc.teamcode.RotateConstants
+import org.firstinspires.ftc.teamcode.StrafeConstants
 
 @Autonomous(name = "PID_Tuning_S")
 class PID_Tuning_S: LinearOpMode() {
@@ -15,9 +18,9 @@ class PID_Tuning_S: LinearOpMode() {
         val motors = Motors(hardwareMap, "FL", "FR", "BL", "BR")
         val otos = Otos(hardwareMap, "OTOS")
         val path = PathBuilder(this, eventListener, motors, otos, true)
-        path.setDriveConstants(0.075,1.0,1.0,0.75)
-        path.setStrafeConstants(0.1,2.0,1.0,0.75)
-        path.setRotateConstants(0.01,1.0,Math.PI/12,1.0)
+        path.setDriveConstants(DriveConstants.GainSpeed, DriveConstants.AccelerationLimit, DriveConstants.Tolerance, DriveConstants.Deadband)
+        path.setStrafeConstants(StrafeConstants.GainSpeed, StrafeConstants.AccelerationLimit, StrafeConstants.Tolerance, StrafeConstants.Deadband)
+        path.setRotateConstants(RotateConstants.GainSpeed, RotateConstants.AccelerationLimit, RotateConstants.Tolerance, RotateConstants.Deadband)
         waitForStart()
         path.start(Point(8.0,32.5,0.0))
 
