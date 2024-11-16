@@ -43,37 +43,31 @@ class Auto_Sample: LinearOpMode() {
         waitForStart()
         path.segment(
             Point(25.0,120.0 * linearadjust,0.0, "lift"),
-            Point(17.0, 130.0 * linearadjust, 0.0))//place0
+            Point(18.0, 128.0 * linearadjust, 0.0))//place0
         path.wait("finish_dropping")
-        path.segment(Point(14.0, 119.0 * linearadjust, 0.0, "lift_down"))//pickup1
-        path.wait("finish_pickup")
+        path.segment(Point(23.0, 117.5 * linearadjust, 0.0, "lift_down"))//pickup1
+        path.wait("end_down")
+        path.wait("finish_pickup", "pickup")
         //path.wait(1000.0)
-        path.segment(
-            Point(22.0, 119.0, 0.0, "pickup"),
-            Point(17.0, 130.0 * linearadjust, 0.0, "lift")
-        ) //place1
+        path.segment(Point(18.0, 128.0 * linearadjust, 0.0, "lift"))//place1
         path.wait("finish_dropping")
         //path.wait(2000.0)
-        path.segment(
-            Point(25.0, 128.0 * linearadjust, 0.0, "lift_down"),//pickup2 finish it
-            Point(17.0, 127.0 * linearadjust, 0.0)
-        )
-        path.wait("finish_pickup")
+        path.segment(Point(23.0, 124.0 * linearadjust, 0.0, "lift_down")) //pickup2
+        path.wait("end_down")
+        path.wait("finish_pickup", "pickup")
         //path.wait(1000.0)
-        path.segment(
-            Point(22.0,127.0,0.0, "pickup"),
-            Point(17.0, 130.0 * linearadjust, 0.0, "lift"))//place2
+        path.segment(Point(18.0, 128.0 * linearadjust, 0.0, "lift"))//place2
         path.wait("finish_dropping")
         //path.wait(2000.0)
-        path.segment(Point(23.0, 128.0 * linearadjust, 32.0, "final_lift_down"))//pickup3
-        path.wait("finished_final_pickup")
-        path.segment(Point(17.0, 130.0 * linearadjust, -50.0, "lift"))//place3
+        path.segment(Point(30.0, 123.0 * linearadjust, 37.0, "final_lift_down"))//pickup3
+        path.wait("finished_final_pickup", "final_pickup")
+        path.segment(Point(17.0, 126.0 * linearadjust, -41.0, "lift"))//place3
         path.wait("finish_dropping")
         path.segment(
-            Point(56.0, 135.0 * linearadjust, -50.0, "park"),//park
-            Point(56.0, 125.0 * linearadjust, -90.0)
+            Point(55.0, 120.0 * linearadjust, -41.0, "park"),//park
+            Point(52.0, 115.0 * linearadjust, -90.0)
         )
-        path.segment(Point(56.0, 89.0 * linearadjust, -90.0))
-        path.endHold("_")
+        path.segment(Point(52.0, 98.0 * linearadjust, -90.0))
+        path.endHold("ascend")
     }
 }

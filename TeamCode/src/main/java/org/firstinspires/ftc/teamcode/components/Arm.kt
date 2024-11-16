@@ -27,7 +27,7 @@ class Arm(private val instance:LinearOpMode) {
     val reference_angle = 3/4*Math.PI
     val half_way = 180.0
 
-    val pid_gear = ProportionalController(0.02, 0.3, 0.4, 0.0, false)
+    val pid_gear = ProportionalController(0.04, 0.3, 0.4, 0.0, false)
     val pid_slide = ProportionalController(0.7,0.3,1.0,0.0, false)
 
     val gear_degrees_ticks = (100*384.5)/16.0/360.0
@@ -54,17 +54,15 @@ class Arm(private val instance:LinearOpMode) {
         slide_target.set(0.0)
         gear_target.set(17.0)
 
-        wrist_servos(250.0,127.5)
+        wrist_servos(1.0,1.0)
         intake_1.power = 0.0
         intake_2.power = 0.0
-
-        //start pos 140w 0t
-        //pick up front 30w 0t
-        //drop pos 30w -84t
-        //wall pick up -140w 0t
-        //1 and 2 pick up 90w 0t
     }
+    fun init_teleOp(){
 
+        intake_1.power = 0.0
+        intake_2.power = 0.0
+    }
     fun go_to_target(){
         val gearOutput = pid_gear.update(Range.clip(gear_target.get(),0.0, 130.0)*gear_degrees_ticks - gear.getPosition())
         val gear_angle = gear.getPosition()/gear_degrees_ticks
@@ -83,17 +81,17 @@ class Arm(private val instance:LinearOpMode) {
         instance.telemetry.addData("thingy", abs(back_extension/ cos(reference_angle - Math.toRadians(gear_angle))))
         instance.telemetry.addData("sqrt", sqrt(abs(slideOutput)) * sign(slideOutput))
         if(gearOutput > 0){
-            gear.setPower(abs(gearOutput).pow(5.0/7.0) * sign(gearOutput) * 0.3)
+            gear.setPower(abs(gearOutput).pow(5.0/7.0) * sign(gearOutput) * 0.5)
         }else{
             gear.setPower(abs(gearOutput).pow(5.0/7.0) * sign(gearOutput) * 0.8)
         }
         //gear.setPower(abs(gearOutput).pow(5.0/7.0) * sign(gearOutput) * 0.8)
-        slide.setPowerWithoutTolerance(abs(slideOutput).pow(1.0/2.0) * sign(slideOutput))
+        slide.setPowerWithoutTolerance(abs(slideOutput).pow(5.0/7.0) * sign(slideOutput))
     }
 
-    fun wrist_servos(wrist: Double, twist: Double){
-        left_wrist.position = ((wrist+half_way) + (twist+half_way))/2.0/255.0
-        right_wrist.position = ((wrist+half_way) - (twist+half_way))/2.0/255.0
+    fun wrist_servos(left: Double, right: Double){
+        left_wrist.position = left
+        right_wrist.position = right
     }
 
     fun intake_servos(power: Double){
