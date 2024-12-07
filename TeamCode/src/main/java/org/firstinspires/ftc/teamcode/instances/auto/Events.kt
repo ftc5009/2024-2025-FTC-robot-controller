@@ -15,8 +15,8 @@ class Events (instance:LinearOpMode){
     val arm = Arm(instance)
     init {
         arm.init_motors()
-        listener.addListener("lift") {
-            //arm.intake_servos(0.0)
+        listener.addListener("lift_sample") {
+            arm.intake_servos(0.0)
             if(arm.slide.getPosition() / arm.slide_inches_ticks > 8.0) {
                 Arm.slide_target.set(8.0)
                 delay(150)
@@ -36,18 +36,18 @@ class Events (instance:LinearOpMode){
             while(arm.slide.getPosition() / arm.slide_inches_ticks < 24.0){
                 delay(50)
             }
-            "drop"
+            "drop_sample"
         }
-        listener.addListener("drop") {
+        listener.addListener("drop_sample") {
             Arm.gear_target.set(43.0)
-            //arm.intake_servos(1.0)
+            arm.intake_servos(-1.0)
             delay(400)
-            //arm.intake_servos(0.0)
-            "finish_dropping"
+            arm.intake_servos(0.0)
+            "finish_dropping_sample"
         }
-        listener.addListener("lift_down") {
+        listener.addListener("lift_down_yellow") {
             Arm.slide_target.set(5.0)
-            delay(200)
+            delay(500)
             Arm.gear_target.set(130.0)
             arm.wrist_servos(0.5, 0.5)
             while(arm.gear.getPosition() / arm.gear_degrees_ticks < 115.0){
@@ -55,14 +55,14 @@ class Events (instance:LinearOpMode){
             }
             "end_down"
         }
-        listener.addListener("pickup"){
+        listener.addListener("pickup_yellow"){
             //Arm.slide_target.set(0.0)
-            Arm.gear_target.set(145.0)
-            //arm.intake_servos(-1.0)
+            Arm.gear_target.set(143.0)
+            arm.intake_servos(1.0)
             delay(1000)
-            "finish_pickup"
+            "finish_pickup_yellow"
         }
-        listener.addListener("final_lift_down"){
+        listener.addListener("final_lift_down_yellow"){
             Arm.slide_target.set(0.0)
             Arm.gear_target.set(130.0)
             arm.wrist_servos(0.64, 0.36)
@@ -71,18 +71,18 @@ class Events (instance:LinearOpMode){
             }
             "_"
         }
-        listener.addListener("final_pickup"){
+        listener.addListener("final_pickup_yellow"){
             Arm.gear_target.set(135.0)
-            //arm.intake_servos(-1.0)
+            arm.intake_servos(1.0)
             delay(700)
-            "finished_final_pickup"
+            "finished_final_pickup_yellow"
         }
-        listener.addListener("park") {
+        listener.addListener("park_ascend") {
             Arm.gear_target.set(73.0)
             Arm.slide_target.set(8.0)
             "help"
         }
-        listener.addListener("start") {
+        listener.addListener("start_sample") {
             while(instance.opModeIsActive() || instance.opModeInInit()){
                 arm.go_to_target()
             }
@@ -98,4 +98,11 @@ class Events (instance:LinearOpMode){
             "_"
         }
     }
+
+
+
+
+
+
+
 }

@@ -1,16 +1,8 @@
 package org.firstinspires.ftc.teamcode.instances.teleop
 
-import android.util.Range
-import ca.helios5009.hyperion.core.Motors
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.Servo
-import org.firstinspires.ftc.teamcode.components.Arm
-import org.firstinspires.ftc.teamcode.components.Arm.Companion.gear_target
-import org.firstinspires.ftc.teamcode.components.Arm.Companion.slide_target
-import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
 
 @TeleOp(name = "Wrist test")
 class Wrist_positions_test: LinearOpMode() {
