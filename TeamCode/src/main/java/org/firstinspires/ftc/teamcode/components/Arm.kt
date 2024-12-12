@@ -27,7 +27,7 @@ class Arm(private val instance:LinearOpMode) {
     val front_extension = 20.0
     val back_extension = -30.0
     val reference_angle = 3/4*Math.PI
-    val half_way = 180.0
+    val safety = 0.1
 
     //val pid_gear = PIDFController(0.8, 0.0, 0.0, 0.0)
     val pid_gear = ProportionalController(0.072, 0.27, 0.4, 0.0, false)
@@ -44,6 +44,9 @@ class Arm(private val instance:LinearOpMode) {
     val intake_1 = instance.hardwareMap.get(CRServo::class.java, "Intake_1")
     val intake_2 = instance.hardwareMap.get(CRServo::class.java,"Intake_2")
 
+    var gear_state = false
+    var slide_state = false
+
     init {
         slide.motor.direction = DcMotorSimple.Direction.REVERSE
         gear.motor.direction = DcMotorSimple.Direction.REVERSE
@@ -57,7 +60,7 @@ class Arm(private val instance:LinearOpMode) {
         slide_target.set(0.0)
         gear_target.set(0.0)
 
-        //wrist_servos(0.95,0.95)
+        //wrist_servos(0.25,0.25)
         intake_1.power = 0.0
         intake_2.power = 0.0
     }
@@ -67,7 +70,7 @@ class Arm(private val instance:LinearOpMode) {
         intake_1.power = 0.0
         intake_2.power = 0.0
     }
-    fun go_to_target(){
+    fun go_to_target(gear_is_on:Boolean = true, slide_is_on:Boolean = true){
         val gearOutput = pid_gear.update(Range.clip(gear_target.get(),0.0, 130.0)*gear_degrees_ticks - gear.getPosition())
         //val gearOutput = pid_gear.calculate(gear.getPosition().toDouble(),Range.clip(gear_target.get(),0.0, 130.0)*gear_degrees_ticks)
         val gear_angle = gear.getPosition()/gear_degrees_ticks
@@ -86,20 +89,44 @@ class Arm(private val instance:LinearOpMode) {
         instance.telemetry.addData("Error Gear", gearOutput)
         instance.telemetry.addData("thingy", abs(back_extension/ cos(reference_angle - Math.toRadians(gear_angle))))
         instance.telemetry.addData("sqrt", sqrt(abs(slideOutput)) * sign(slideOutput))
-        if(gear.getPosition() / gear_degrees_ticks < 45.0){
-            gear.setPower(abs(gearOutput).pow(10.0/9.0) * sign(gearOutput) * 0.8)
-        }else if(gearOutput > 0){
-            gear.setPower(abs(gearOutput).pow(10.0/9.0) * sign(gearOutput) * 0.5)
-        }else{
-            gear.setPower(abs(gearOutput).pow(10.0/9.0) * sign(gearOutput) * 0.9)
+        if(gear_is_on && !gear_state) {
+            gear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE)
+            gear_state = true
+        } else if(!gear_is_on && gear_state) {
+            gear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT)
+            gear_state = false
         }
-        //gear.setPower(abs(gearOutput).pow(5.0/7.0) * sign(gearOutput) * 0.8)
-        slide.setPowerWithoutTolerance(abs(slideOutput).pow(4.0/7.0) * sign(slideOutput))
+
+        if(slide_is_on && !slide_state) {
+            slide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE)
+            slide_state = true
+        } else if (!slide_is_on && slide_state) {
+            slide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT)
+            slide_state = false
+        }
+
+        if(gear_is_on) {
+            if (gear.getPosition() / gear_degrees_ticks < 20.0) {
+                gear.setPowerWithoutTolerance(abs(gearOutput).pow(1.0 / 2.0) * sign(gearOutput) * 0.9)
+            } else if (gearOutput > 0) {
+                gear.setPowerWithoutTolerance(abs(gearOutput).pow(3.0 / 1.0) * sign(gearOutput) * 0.4)
+            } else {
+                gear.setPowerWithoutTolerance(abs(gearOutput).pow(1.0 / 2.0) * sign(gearOutput) * 1.0)
+            }
+            //gear.setPower(abs(gearOutput).pow(5.0/7.0) * sign(gearOutput) * 0.8)
+        } else {
+            gear.setPowerWithoutTolerance(0.0)
+        }
+        if(slide_is_on) {
+            slide.setPowerWithoutTolerance(abs(slideOutput).pow(4.0/7.0) * sign(slideOutput))
+        } else {
+            slide.setPowerWithoutTolerance(0.0)
+        }
     }
 
     fun wrist_servos(left: Double, right: Double){
-        left_wrist.position = left
-        right_wrist.position = right
+        left_wrist.position = min(left + safety, 0.9)
+        right_wrist.position = min(right + safety, 0.9)
     }
 
     fun intake_servos(power: Double){
@@ -107,9 +134,22 @@ class Arm(private val instance:LinearOpMode) {
         intake_2.power = -power
     }
 
+    enum class ArmState {
+        CRUISE,
+        LOW_BASKET,
+        HIGH_BASKET,
+        LOW_CHAMBER,
+        LOW_CHAMBER_SCORE,
+        HIGH_CHAMBER,
+        HIGH_CHAMBER_SCORE,
+        WALL_PICKUP,
+        SUBMERSIBLE,
+        ENDED
+    }
     companion object {
         val gear_target = AtomicReference(0.0)
         val slide_target = AtomicReference(0.0)
-        var grav = AtomicReference(false)
+        val grav = AtomicReference(false)
+        val free_slide = AtomicReference(false)
     }
 }
