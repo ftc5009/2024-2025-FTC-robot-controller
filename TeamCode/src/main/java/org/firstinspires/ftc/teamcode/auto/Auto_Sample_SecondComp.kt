@@ -53,8 +53,8 @@ class Auto_Sample_SecondComp: LinearOpMode() {
         //.segment(Point(19.0,124.0 * linearadjust,-80.0, "drop_done"))
         .wait(100.0)
         .wait("picked_up", "pick_up") //pickup 2
-        .segment(Point(18.0,125.5 * linearadjust, -38.0, "arm_up").setTolerance(4.0)
-                ,Point(18.0,126.0 * linearadjust,-38.0)
+        .segment(Point(18.0,121.5 * linearadjust, -38.0, "arm_up").setTolerance(4.0)
+                ,Point(18.0,125.0 * linearadjust,-38.0)
         )
         .wait("up_arm")
         .wait("dropped", "drop_sample")

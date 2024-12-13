@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.Servo
+import com.qualcomm.robotcore.util.ElapsedTime
 import com.qualcomm.robotcore.util.Range
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +22,10 @@ class MainTeleOp: LinearOpMode() {
 		val motors = Motors(hardwareMap, "FL", "FR", "BL", "BR")
 		motors.setPowerRatio(1.0)
 
+		val timer = ElapsedTime()
+		var ended = false
+		var started = false
+
 		val controls = TeleOp_GamePads(this)
 
 		while (opModeInInit()) {
@@ -32,8 +37,12 @@ class MainTeleOp: LinearOpMode() {
 			telemetry.addData("gear pos", controls.arm.gear.getPosition() / controls.arm.gear_degrees_ticks)
 			telemetry.update()
 		}
+		controls.hang_arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER)
+		controls.hang_arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER)
 		waitForStart()
+		timer.reset()
 		controls.arm.init_teleOp()
+
 
 		CoroutineScope(Dispatchers.Default).launch {
 			while(opModeIsActive()) {
@@ -47,6 +56,14 @@ class MainTeleOp: LinearOpMode() {
 		}
 
 		while (opModeIsActive()) {
+			if(controls.hang_arm.getPosition() > 4000.0 && !ended && started){
+				controls.hang_arm.setPower(0.0)
+				ended = true
+			}
+			if(timer.seconds() > 10.0 && !ended && !started){
+				controls.hang_arm.setPower(1.0)
+				started = true
+			}
 			val drive = -gamepad1.left_stick_y.toDouble()
 			val strafe = gamepad1.left_stick_x.toDouble()
 			val rotate = gamepad1.right_stick_x.toDouble()
@@ -56,6 +73,7 @@ class MainTeleOp: LinearOpMode() {
 			telemetry.addData("gear", controls.arm.gear.getPosition() / controls.arm.gear_degrees_ticks)
 			telemetry.addData("R", controls.arm.right_wrist.position)
 			telemetry.addData("L", controls.arm.left_wrist.position)
+			telemetry.addData("Hang encorder", controls.hang_arm.getPosition())
 			telemetry.update()
 		}
 	}

@@ -23,9 +23,9 @@ class Robot(instance: LinearOpMode, events:EventListener, is_auto:Boolean = fals
                 12.0
             )
             path.setStrafeConstants(
-                StrafeConstants.GainSpeed,
+                DriveConstants.GainSpeed,
                 0.0,
-                StrafeConstants.kD,
+                DriveConstants.kD,
                 0.0,
                 StrafeConstants.Tolerance,
                 12.0
@@ -45,19 +45,19 @@ class Robot(instance: LinearOpMode, events:EventListener, is_auto:Boolean = fals
 
 @Config
 object DriveConstants {
-    @JvmField var GainSpeed = 0.037
+    @JvmField var GainSpeed = 0.057
     @JvmField var AccelerationLimit = 0.6
-    @JvmField var kD = 0.5
-    @JvmField var Tolerance = 1.0
+    @JvmField var kD = 0.0
+    @JvmField var Tolerance = 2.0
     @JvmField var Deadband = 0.25
 }
 
 @Config
 object StrafeConstants {
-    @JvmField var GainSpeed = 0.076
+    @JvmField var GainSpeed = 0.086
     @JvmField var AccelerationLimit = 0.8
-    @JvmField var kD = 0.5
-    @JvmField var Tolerance = 2.5
+    @JvmField var kD = 0.0
+    @JvmField var Tolerance = 4.0
     @JvmField var Deadband = 0.25
 }
 
@@ -65,7 +65,7 @@ object StrafeConstants {
 object RotateConstants {
     @JvmField var GainSpeed = 1.5
     @JvmField var AccelerationLimit = 0.5
-    @JvmField var kD = 0.5
+    @JvmField var kD = 0.0
     @JvmField var Tolerance = Math.PI/12
     @JvmField var Deadband = Math.PI/24
 }

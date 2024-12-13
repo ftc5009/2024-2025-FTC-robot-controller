@@ -10,8 +10,8 @@ class Wrist_positions_test: LinearOpMode() {
 	override fun runOpMode() {
 		val arm = Arm(this)
 		val stopper = hardwareMap.get(Servo::class.java, "stopper")
-		var left = 0.4
-		var right = 0.4
+		var left = 0.5
+		var right = 0.5
 		val half_way = 180.0
 		waitForStart()
 		while (opModeIsActive()) {

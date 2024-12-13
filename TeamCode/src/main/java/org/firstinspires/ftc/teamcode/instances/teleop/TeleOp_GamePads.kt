@@ -36,7 +36,7 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
 
     fun game_pad_1() {
         if (gamepad1.b && armState == Arm.ArmState.SUBMERSIBLE && !b1_pressed) {
-            arm.wrist_servos(0.2, 0.2)
+            arm.wrist_servos(0.1, 0.1)
             set_stopper(0.5)
             Arm.grav.set(true)
             armState = Arm.ArmState.WALL_PICKUP

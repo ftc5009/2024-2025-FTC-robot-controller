@@ -58,7 +58,7 @@ class Simple_events (instance:LinearOpMode) {
         }
         listener.addListener("arm_up") {
             arm.intake_servos(0.0)
-            Arm.gear_target.set(24.0)
+            Arm.gear_target.set(17.0)
             Arm.slide_target.set(12.0)
             delay(900)
             arm.intake_servos(0.0)
