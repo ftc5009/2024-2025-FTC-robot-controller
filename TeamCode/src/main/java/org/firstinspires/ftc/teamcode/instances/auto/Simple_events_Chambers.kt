@@ -15,10 +15,10 @@ class Simple_events_Chambers (instance:LinearOpMode) {
     init {
         arm.init_motors()
         listener.addListener("init") {
-            Arm.gear_target.set(30.0)
+            Arm.gear_target.set(50.0)
             stopper.position = 0.5
             Arm.grav.set(false)
-            arm.wrist_servos(0.0,0.0)
+            arm.wrist_servos(-0.05,-0.05)
             for(i in 1..9) {
                 arm.go_to_target()
                 delay(50)
@@ -37,7 +37,7 @@ class Simple_events_Chambers (instance:LinearOpMode) {
         }
         listener.addListener("set_gear") {
             Arm.grav.set(false)
-            Arm.gear_target.set(46.0)
+            Arm.gear_target.set(52.0)
             Arm.slide_target.set(6.0)
             delay(1200)
             //arm.wrist_servos(0.45, 0.45)
@@ -61,7 +61,7 @@ class Simple_events_Chambers (instance:LinearOpMode) {
         listener.addListener("chamber_up") {
             arm.wrist_servos(0.4,0.4)
             //arm.intake_servos(-0.2)
-            Arm.slide_target.set(7.3)
+            Arm.slide_target.set(7.0)
             Arm.gear_target.set(58.0)
             delay(1200)
             Arm.grav.set(true)
@@ -73,7 +73,7 @@ class Simple_events_Chambers (instance:LinearOpMode) {
             Arm.slide_target.set(Arm.slide_target.get() -1.5)
             arm.wrist_servos(0.5,0.5)
             delay(700)
-            Arm.slide_target.set(0.4)
+            Arm.slide_target.set(3.0)
             delay(1200)
             /*while(arm.slide.getPosition() / arm.slide_inches_ticks > 4.0) {
                 delay(50)
@@ -134,7 +134,7 @@ class Simple_events_Chambers (instance:LinearOpMode) {
             Arm.grav.set(false)
             Arm.gear_target.set(50.0)
             Arm.slide_target.set(5.0)
-            delay(1000)
+            delay(800)
             Arm.slide_target.set(6.5)
             arm.intake_servos(0.7)
             delay(200)

@@ -23,11 +23,11 @@ class Auto_Sample_SecondComp: LinearOpMode() {
         val path = bot.path
         val linearadjust = 1.0
         val timer = ElapsedTime()
-        eventListener.arm.wrist_servos(0.0,0.0)
+        path.start(Point(11.0, 110.0 * linearadjust, 0.0, "init"))//start
         waitForStart()
         timer.reset()
-        path.start(Point(11.0, 110.0 * linearadjust, 0.0, "start_sample"))//start
-        .segment(Point(21.0,110.0 * linearadjust,0.0, "set_gear").setTolerance(4.0)
+        path.wait("initialized", "start_sample")
+        path.segment(Point(21.0,110.0 * linearadjust,0.0, "set_gear").setTolerance(4.0)
                 ,Point(18.0, 105.0 * linearadjust, 0.0)
         )//place0
         path.wait("gear_set")
@@ -36,37 +36,39 @@ class Auto_Sample_SecondComp: LinearOpMode() {
         )
         .wait("up_arm")
         .wait("dropped", "drop_sample")
-        .segment(Point(28.0, 115.5, 0.0, "lift_down").setTolerance(4.0)
-                ,Point(25.0, 119.0 * linearadjust, 0.0)
+        .segment(Point(28.0, 115.5, -5.0, "lift_down").setTolerance(4.0)
+                ,Point(25.0, 119.0 * linearadjust, 5.0, "pick_up")
         )
         //.segment(Point(19.0,124.0 * linearadjust,-80.0, "drop_done"))
-        .wait(100.0)
-        .wait("picked_up", "pick_up") //pickup 1
-        .segment(Point(18.0,130.5 * linearadjust, -45.0, "arm_up").setTolerance(4.0)
-                ,Point(18.0,126.0 * linearadjust,-45.0)
+        .wait("picked_up") //pickup 1
+        .segment(Point(18.0,128.5 * linearadjust, -45.0, "arm_up").setTolerance(4.0)
+                ,Point(18.0,124.0 * linearadjust,-45.0)
         )
         .wait("up_arm")
         .wait("dropped", "drop_sample")
-        .segment(Point(29.0, 129.5, 0.0, "lift_down").setTolerance(4.0)
-                ,Point(26.0, 126.0 * linearadjust, 0.0)
+        .segment(Point(29.0, 129.5 * linearadjust, -10.0, "lift_down").setTolerance(4.0)
+                ,Point(26.0, 126.0 * linearadjust, 0.0, "pick_up")
         )
         //.segment(Point(19.0,124.0 * linearadjust,-80.0, "drop_done"))
-        .wait(100.0)
-        .wait("picked_up", "pick_up") //pickup 2
-        .segment(Point(18.0,121.5 * linearadjust, -38.0, "arm_up").setTolerance(4.0)
-                ,Point(18.0,125.0 * linearadjust,-38.0)
+        .wait("picked_up") //pickup 2
+        .segment(Point(18.0,122.5 * linearadjust, -38.0, "arm_up").setTolerance(4.0)
+                ,Point(18.0,123.0 * linearadjust,-38.0)
         )
         .wait("up_arm")
         .wait("dropped", "drop_sample")
         if(timer.seconds() < 24.0) {
-            path.segment(Point(50.0,125.0 * linearadjust,90.0, "lift_down_final").setTolerance(4.0)
-                    ,Point(48.0,135.0 * linearadjust,105.0).setTolerance(6.0)
-                    ,Point(15.0,125.0 * linearadjust,135.0).setTolerance(4.0)
-                    ,Point(40.0, 125.0,-170.0)
+            path.segment(Point(30.5,132.0 * linearadjust,10.0, "lift_down").setTolerance(5.0)
+                    ,Point(28.0,127.0 * linearadjust,26.0, "pick_up")
             )
+            .wait("picked_up") //pickup 3
+            .segment(Point(18.0,122.5 * linearadjust, -38.0, "arm_up").setTolerance(4.0)
+                    ,Point(18.0,123.0 * linearadjust,-38.0)
+            )
+            .wait("up_arm")
+            .wait("dropped", "drop_sample")
         }
-        path.segment(Point(56.0,120.0 * linearadjust,-80.0, "lift_down_final").setTolerance(6.0)
-                ,Point(58.0, 94.0 * linearadjust, -80.0, "ascend").setTolerance(4.0)
+        path.segment(Point(60.0,115.0 * linearadjust,-80.0, "lift_down_final").setTolerance(12.0)
+                ,Point(58.0, 90.0 * linearadjust, -80.0, "ascend").setTolerance(8.0)
                 ,Point(58.0, 98.0 * linearadjust, -80.0)
         )
         .end()

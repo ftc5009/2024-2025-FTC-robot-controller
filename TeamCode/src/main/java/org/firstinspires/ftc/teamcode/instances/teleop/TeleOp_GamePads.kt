@@ -36,7 +36,7 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
 
     fun game_pad_1() {
         if (gamepad1.b && armState == Arm.ArmState.SUBMERSIBLE && !b1_pressed) {
-            arm.wrist_servos(0.1, 0.1)
+            arm.wrist_servos(0.0, 0.0)
             set_stopper(0.5)
             Arm.grav.set(true)
             armState = Arm.ArmState.WALL_PICKUP
@@ -70,6 +70,11 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
             a1_pressed = false
             Arm.grav.set(false)
             stopper.position = 0.5
+        }
+        if(gamepad1.x && armState == Arm.ArmState.SUBMERSIBLE){
+            arm.wrist_servos(0.05, 0.05)
+            set_stopper(0.5)
+
         }
 
         // MANUAL GEAR MOVEMENT
@@ -155,7 +160,7 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
         }
 
         // CHAMBERS
-        if (gamepad2.x && !x_pressed) {
+        if (gamepad2.x && !x_pressed && armState != Arm.ArmState.HIGH_BASKET) {
             //high chamber for specimens
             if (armState == Arm.ArmState.HIGH_CHAMBER) {
                 //high chamber scoring
@@ -177,7 +182,7 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
         }
 
         // LOW CHAMBERS
-        if (gamepad2.b && !gamepad2.start && !b_pressed) {
+        if (gamepad2.b && !gamepad2.start && !b_pressed && armState != Arm.ArmState.HIGH_BASKET) {
             //high chamber for specimens
             if (armState == Arm.ArmState.LOW_CHAMBER) {
                 //low chamber score
@@ -191,6 +196,7 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
                 arm.wrist_servos(0.45, 0.45)
                 armState = Arm.ArmState.LOW_CHAMBER
             }
+            Arm.free_slide.set(false)
             Arm.grav.set(false)
             b_pressed = true
         } else if (!gamepad2.b && b_pressed) {
@@ -216,7 +222,7 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
         }
 
         // WRIST MOVEMENT
-        if (gamepad2.dpad_up && manual_wrist) {
+        /*if (gamepad2.dpad_up && manual_wrist) {
             if (arm.right_wrist.position != 1.0 && arm.left_wrist.position != 1.0 && arm.right_wrist.position + arm.left_wrist.position < 1.0) {
                 arm.right_wrist.position += 0.01
                 arm.left_wrist.position += 0.01
@@ -227,7 +233,7 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
                     arm.left_wrist.position -= 0.01
                 }
             }
-        }
+        }*/
         /*if (gamepad2.dpad_left && manual_wrist) {
             if(arm.right_wrist.position != 1.0 && arm.left_wrist.position != 0.0) {
                 arm.right_wrist.position += 0.01

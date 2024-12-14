@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import org.firstinspires.ftc.teamcode.components.Arm
 import org.firstinspires.ftc.teamcode.components.Arm.Companion.gear_target
 import org.firstinspires.ftc.teamcode.components.Arm.Companion.slide_target
+import kotlin.math.abs
 
 @TeleOp(name = "Main")
 class MainTeleOp: LinearOpMode() {
@@ -25,6 +26,7 @@ class MainTeleOp: LinearOpMode() {
 		val timer = ElapsedTime()
 		var ended = false
 		var started = false
+		var drive = 0.0
 
 		val controls = TeleOp_GamePads(this)
 
@@ -64,7 +66,12 @@ class MainTeleOp: LinearOpMode() {
 				controls.hang_arm.setPower(1.0)
 				started = true
 			}
-			val drive = -gamepad1.left_stick_y.toDouble()
+			drive = -gamepad1.left_stick_y.toDouble()
+			if(gamepad2.dpad_up && abs(drive) < 0.2){
+				drive = 0.4
+			}else if(gamepad2.dpad_down && abs(drive) < 0.2){
+				drive = -0.4
+			}
 			val strafe = gamepad1.left_stick_x.toDouble()
 			val rotate = gamepad1.right_stick_x.toDouble()
 			motors.gamepadMove(drive, strafe, rotate)
