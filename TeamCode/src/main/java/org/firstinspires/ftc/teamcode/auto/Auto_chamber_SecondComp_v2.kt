@@ -29,7 +29,7 @@ class Auto_chamber_SecondComp_v2: LinearOpMode() {
         telemetry.update()
         waitForStart()
         path.segment(Point(15.0, 63.0 * linearadjust, 0.0, "start_sample").setTolerance(6.0)
-                ,Point(28.0,63.0 * linearadjust,0.0, "set_gear")
+                    ,Point(28.0,63.0 * linearadjust,0.0, "set_gear")
         )
         .wait("gear_set")
         .segment(Point(36.0, 63.0, 0.0,"first_chamber").setTolerance(4.0)
@@ -50,8 +50,8 @@ class Auto_chamber_SecondComp_v2: LinearOpMode() {
                 ,Point(18.0, 30.0, -90.0,"arm_up")
         )
         .segment(Point(24.0, 63.0 * linearadjust, 0.0).setTolerance(4.0)
-                ,Point(38.0, 73.0 * linearadjust, 0.0, "chamber_up").setTolerance(4.0)
-                ,Point(36.0, 70.0 * linearadjust, 0.0))
+                ,Point(36.0, 73.0 * linearadjust, 0.0, "chamber_up").setTolerance(4.0)//was x 38
+                ,Point(34.0, 70.0 * linearadjust, 0.0))// was x 36
         .wait("chamber_ready")
         .wait("first_score", "first_score_chamber")
         .segment(Point(25.0, 63.0 * linearadjust, 0.0,"_arm_off").setTolerance(4.0)

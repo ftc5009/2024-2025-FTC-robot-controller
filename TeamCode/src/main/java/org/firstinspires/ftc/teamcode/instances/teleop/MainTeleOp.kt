@@ -68,9 +68,9 @@ class MainTeleOp: LinearOpMode() {
 			}
 			drive = -gamepad1.left_stick_y.toDouble()
 			if(gamepad2.dpad_up && abs(drive) < 0.2){
-				drive = 0.4
+				drive = 0.6
 			}else if(gamepad2.dpad_down && abs(drive) < 0.2){
-				drive = -0.4
+				drive = -0.6
 			}
 			val strafe = gamepad1.left_stick_x.toDouble()
 			val rotate = gamepad1.right_stick_x.toDouble()

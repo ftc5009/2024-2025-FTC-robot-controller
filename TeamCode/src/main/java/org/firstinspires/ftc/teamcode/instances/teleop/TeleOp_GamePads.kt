@@ -35,16 +35,14 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
     }
 
     fun game_pad_1() {
-        if (gamepad1.b && armState == Arm.ArmState.SUBMERSIBLE && !b1_pressed) {
-            arm.wrist_servos(0.0, 0.0)
+        if (gamepad1.circle && armState == Arm.ArmState.SUBMERSIBLE && !b1_pressed) {
             set_stopper(0.5)
             Arm.grav.set(true)
-            armState = Arm.ArmState.WALL_PICKUP
             b1_pressed = true
-        } else if (gamepad1.b) {
+        } else if (gamepad1.circle) {
             arm.wrist_servos(0.3, 0.3)
             set_stopper(0.5)
-        } else if (!gamepad1.b && b1_pressed) {
+        } else if (!gamepad1.circle && b1_pressed) {
             if (armState == Arm.ArmState.WALL_PICKUP) {
                 Arm.grav.set(false)
                 armState = Arm.ArmState.SUBMERSIBLE
@@ -58,23 +56,25 @@ class TeleOp_GamePads (private val instance: LinearOpMode) {
             set_stopper(0.0)
             arm.wrist_servos(0.45, 0.45)
             a1_pressed = true
-        } else if (gamepad1.a && !gamepad1.start && !a1_pressed) {
+        } else if (gamepad1.cross && !gamepad1.start && !a1_pressed) {
             Arm.grav.set(true)
             set_stopper(0.0)
             a1_pressed = true
-        } else if (!gamepad1.a && !gamepad1.start && armState == Arm.ArmState.SUBMERSIBLE && a1_pressed) {
+        } else if (!gamepad1.cross && !gamepad1.start && armState == Arm.ArmState.SUBMERSIBLE && a1_pressed) {
             set_stopper(0.0)
             Arm.grav.set(false)
             a1_pressed = false
-        } else if (!gamepad1.a && a1_pressed && !gamepad1.start) {
+        } else if (!gamepad1.cross && a1_pressed && !gamepad1.start) {
             a1_pressed = false
             Arm.grav.set(false)
             stopper.position = 0.5
         }
-        if(gamepad1.x && armState == Arm.ArmState.SUBMERSIBLE){
+        if(gamepad1.square && armState == Arm.ArmState.SUBMERSIBLE){
             arm.wrist_servos(0.05, 0.05)
             set_stopper(0.5)
-
+        }
+        if(gamepad1.triangle && armState == Arm.ArmState.SUBMERSIBLE){
+            arm.wrist_servos(0.1, 0.1 )
         }
 
         // MANUAL GEAR MOVEMENT

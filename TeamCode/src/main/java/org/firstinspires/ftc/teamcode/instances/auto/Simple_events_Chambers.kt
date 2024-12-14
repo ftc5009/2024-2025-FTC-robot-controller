@@ -37,7 +37,7 @@ class Simple_events_Chambers (instance:LinearOpMode) {
         }
         listener.addListener("set_gear") {
             Arm.grav.set(false)
-            Arm.gear_target.set(52.0)
+            Arm.gear_target.set(58.0)
             Arm.slide_target.set(6.0)
             delay(1200)
             //arm.wrist_servos(0.45, 0.45)
@@ -99,6 +99,7 @@ class Simple_events_Chambers (instance:LinearOpMode) {
 
         listener.addListener("arm_off") {
             Arm.slide_target.set(4.0)
+            Arm.gear_target.set(45.0)
             delay(1000)
             arm.intake_servos(0.2)
             delay(800)
@@ -126,7 +127,7 @@ class Simple_events_Chambers (instance:LinearOpMode) {
             arm.intake_servos(1.0)
             delay(700)
             Arm.slide_target.set(8.0)
-            arm.wrist_servos(0.1, 0.1)
+            arm.wrist_servos(0.05, 0.05)
             delay(800)
             Arm.slide_target.set(9.8)
             arm.intake_servos(0.8)
